@@ -2,7 +2,7 @@ import argparse
 import os
 import torch
 import os, sys
-sys.path.append("/home/vtp/percep_proj/sgan/")
+sys.path.append("/PIR_SGAN/sgan/")
 from attrdict import AttrDict
 import json
 
@@ -38,7 +38,7 @@ def get_generator(checkpoint):
         grid_size=args.grid_size,
         batch_norm=args.batch_norm)
     generator.load_state_dict(checkpoint['g_state'])
-    generator.cuda()
+    #generator.cuda()
     generator.train()
     return generator
 
@@ -62,7 +62,7 @@ def evaluate(args, loader, generator, num_samples):
     total_traj = 0
     with torch.no_grad():
         for batch in loader:
-            batch = [tensor.cuda() for tensor in batch]
+            batch = [tensor for tensor in batch]
             (obs_traj, pred_traj_gt, obs_traj_rel, pred_traj_gt_rel,
              non_linear_ped, loss_mask, seq_start_end) = batch
 
@@ -105,7 +105,7 @@ def main(args):
     results_table={}
     for iter in range(10):
         for path in paths:
-            checkpoint = torch.load(path)
+            checkpoint = torch.load(path, map_location=torch.device("cpu"))
             generator = get_generator(checkpoint)
             _args = AttrDict(checkpoint['args'])
             path = get_dset_path(_args.dataset_name, args.dset_type)
