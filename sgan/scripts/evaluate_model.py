@@ -103,7 +103,7 @@ def main(args):
     else:
         paths = [args.model_path]
     results_table={}
-    for iter in range(10):
+    for iter in range(1):
         for path in paths:
             checkpoint = torch.load(path, map_location=torch.device("cpu"))
             generator = get_generator(checkpoint)
