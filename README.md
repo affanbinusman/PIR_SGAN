@@ -6,11 +6,11 @@ Based on the SGAN model for finding human path trajectories in a Docker containe
 ## Running the Docker container
 1. Build the container 
 ```
-docker build . -t sgan
+docker build . --platform=linux/amd64 -t sgan
 ```
 2. Run the container 
 ```
-docker run --network=host sgan
+docker run --network=host --platform=linux/amd64 -it sgan
 ```
 
 ## Running the model
