@@ -1,1 +1,26 @@
 # PIR_SGAN
+
+Project repository for simulating a socially compliant robot which avoids human path trajectories. 
+Based on the SGAN model for finding human path trajectories in a Docker container, simulations are performed using p5.js on a chrome and FastAPI backend.
+
+## Running the Docker container
+1. Build the container 
+```
+docker build . -t sgan
+```
+2. Run the container 
+```
+docker run --network=host sgan
+```
+
+## Running the model
+1. After running the container, you will directly drop into the PIR_SGAN/sgan directory
+2. To run the model on the custom.txt input file in datasets/eth/test/, run the following code:
+```
+python3.7 scripts/em2.py --model_path models/sgan-models/
+```
+
+## Future work
+1. Integrate FastAPI server for taking the observations and giving a predicted path
+2. Create a p5.js based frontend for simulating the people and the bots
+3. Autorun the server 
