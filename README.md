@@ -20,6 +20,11 @@ docker run --network=host --platform=linux/amd64 -it sgan
 python3.7 scripts/em2.py --model_path models/sgan-models/
 ```
 
+## Running the FastAPI based server
+```
+uvicorn main:app --reload
+```
+
 ## Future work
 1. Integrate FastAPI server for taking the observations and giving a predicted path
 2. Create a p5.js based frontend for simulating the people and the bots
