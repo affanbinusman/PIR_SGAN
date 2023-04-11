@@ -29,3 +29,6 @@ uvicorn main:app --reload
 1. Integrate FastAPI server for taking the observations and giving a predicted path
 2. Create a p5.js based frontend for simulating the people and the bots
 3. Autorun the server 
+
+@affanbinusman
+1. Change dict to nparray /Users/affanbinusman/Documents/GitHub/PIR_SGAN/sgan/sgan/data/trajectories.py
