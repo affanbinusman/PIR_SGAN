@@ -93,8 +93,12 @@ class TrajectoryDataset(Dataset):
         self.seq_len = self.obs_len #+ self.pred_len
         self.delim = delim
 
-        all_files = os.listdir(self.data_dir)
-        all_files = [os.path.join(self.data_dir, _path) for _path in all_files]
+        if trajs is None:
+            all_files = os.listdir(self.data_dir)
+            all_files = [os.path.join(self.data_dir, _path) for _path in all_files]
+        else:
+            # hack so I don't have to re-write the whole loop...
+            all_files = [0]
         num_peds_in_seq = []
         seq_list = []
         seq_list_rel = []

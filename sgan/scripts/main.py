@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import torch
 import sys
-sys.path.append("/PIR_SGAN/sgan/")
+sys.path.append("/PIR_SGAN-main/sgan/")
 from attrdict import AttrDict
 
 import numpy as np
@@ -57,16 +57,16 @@ def evaluate2(args, loader, generator, num_samples):
 
         return pred_traj_fake
 
-filenames = os.listdir("models/sgan-models/")
+filenames = os.listdir("../models/sgan-models/")
 filenames.sort()
 paths = [
-    os.path.join(args.model_path, file_) for file_ in filenames
+    os.path.join("/PIR_SGAN-main/sgan/models/sgan-models", file_) for file_ in filenames
 ]
 for path in paths:
     checkpoint = torch.load(path, map_location=torch.device("cpu"))
     generator = get_generator(checkpoint)
     _args = AttrDict(checkpoint['args'])
-    path = get_dset_path(_args.dataset_name, args.dset_type)
+    #path = get_dset_path(_args.dataset_name, args.dset_type)
 
 app = FastAPI()
 
@@ -85,5 +85,5 @@ async def response(data: dict):
     trajs = list(data.values())[0]
     trajs = [[float(val) for val in row] for row in trajs]
     _, loader = data_loader(_args, path, np.asarray(trajs))
-    preds = evaluate2(_args, loader, generator, args.num_samples)
-    return {"preds": preds}
+    preds = evaluate2(_args, loader, generator, 1)
+    return {"preds": preds.tolist()}
