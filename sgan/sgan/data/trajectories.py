@@ -70,7 +70,7 @@ class TrajectoryDataset(Dataset):
     """Dataloder for the Trajectory datasets"""
     def __init__(
         self, data_dir, obs_len=8, pred_len=12, skip=1, threshold=0.002,
-        min_ped=1, delim='\t'
+        min_ped=1, delim='\t', trajs=None
     ):
         """
         Args:
@@ -101,7 +101,10 @@ class TrajectoryDataset(Dataset):
         loss_mask_list = []
         non_linear_ped = []
         for path in all_files:
-            data = read_file(path, delim)
+            if trajs is None:
+                data = read_file(path, delim)
+            else:
+                data = trajs
             frames = np.unique(data[:, 0]).tolist()
             frame_data = []
             for frame in frames:
