@@ -1,10 +1,10 @@
 var persons = [];
 var trajectories = [];
+var predictions = [];
 var timestep = 0;
 
 function getNewPredictions() {
-	const data = trajectories;
-	console.log(data);
+	const data = {"data": trajectories};
 	fetch("http://localhost:8000/get_preds", {
 			method: 'POST',
 			headers: {
@@ -40,15 +40,19 @@ function draw() {
 	for (let i = 0; i < 2; i++) {
 		persons[i].updatePosition(0);
 		persons[i].display();
+		
+		trajectories.push([timestep, i, persons[i].posX, persons[i].posY]);
 
-		trajectories.push([timestep, persons[i].posX, persons[i].posY]);
-
-		if (timestep > 80) {
+		if (trajectories.length > (persons.length * 8)) {
 			trajectories.shift();
-			getNewPredictions();
 		}
 
 	}
+
+	if (trajectories.length >= (persons.length * 8)) {
+		getNewPredictions();
+	} 
+
 
 	timestep += 10;
 }
