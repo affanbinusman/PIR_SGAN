@@ -2,6 +2,8 @@ var persons = [];
 var trajectories = [];
 var predictions = [];
 var timestep = 0;
+var requestMade = false;
+const numberOfPeople = 10;
 
 function getNewPredictions() {
 	const data = {"data": trajectories};
@@ -21,23 +23,31 @@ function getNewPredictions() {
 			}
 	})
 	.then(data => {
+			requestMade = false;
 			predictions = data.preds;
+			loop();
 	});
 }
 
 
 function setup() {
 	createCanvas(400, 400);
-	frameRate(1);
+	frameRate(10);
 
-	persons.push(new Person(210, 210, 1, 1, "red"));
-	persons.push(new Person(260, 260, -1, -1, "blue"));
+	for (let i  = 0; i < numberOfPeople; i++) {
+		persons.push(new Person(randomGaussian(200, 50), randomGaussian(200, 50),
+									randomGaussian(0), randomGaussian(0)));
+	}
+
+	// persons.push(new Person(75, 75, 1, 1));
+	// persons.push(new Person(125, 125, -1, -1));
 }
 
 function draw() {
 	background(0);
 
-	for (let i = 0; i < 2; i++) {
+
+	for (let i = 0; i < numberOfPeople; i++) {
 		if (predictions.length != 0) {
 			persons[i].updatePosition(1, predictions[0][i][0], predictions[0][i][1]);
 		}
@@ -51,7 +61,6 @@ function draw() {
 		if (trajectories.length > (persons.length * 8)) {
 			trajectories.shift();
 		}
-
 	}
 
 	predictions.shift();
@@ -60,6 +69,7 @@ function draw() {
 	if (trajectories.length >= (persons.length * 8) &&
 		predictions.length == 0) {
 		getNewPredictions();
+		noLoop();
 	} 
 
 

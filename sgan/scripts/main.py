@@ -56,11 +56,11 @@ def evaluate2(args, loader, generator, num_samples):
                 #print(pred_traj_fake)
 
         return pred_traj_fake
-
-filenames = os.listdir("../models/sgan-p-models/")
+dir_name = "/PIR_SGAN-main/sgan/models/sgan-models"
+filenames = os.listdir(dir_name)
 filenames.sort()
 paths = [
-    os.path.join("/PIR_SGAN-main/sgan/models/sgan-p-models", file_) for file_ in filenames
+    os.path.join(dir_name, file_) for file_ in filenames
 ]
 for path in paths:
     checkpoint = torch.load(path, map_location=torch.device("cpu"))
