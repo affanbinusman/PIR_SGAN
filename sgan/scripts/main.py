@@ -50,23 +50,22 @@ def evaluate2(args, loader, generator, num_samples):
                 pred_traj_fake = relative_to_abs(
                     pred_traj_fake_rel, obs_traj[-1]
                 )
-                print(f"obs_traj of size {len(obs_traj)}:")
-                print(obs_traj)
-                print("pred_traj_fake:")
-                print(pred_traj_fake)
+                #print(f"obs_traj of size {len(obs_traj)}:")
+                #print(obs_traj)
+                #print("pred_traj_fake:")
+                #print(pred_traj_fake)
 
         return pred_traj_fake
 
-filenames = os.listdir("../models/sgan-models/")
+filenames = os.listdir("../models/sgan-p-models/")
 filenames.sort()
 paths = [
-    os.path.join("/PIR_SGAN-main/sgan/models/sgan-models", file_) for file_ in filenames
+    os.path.join("/PIR_SGAN-main/sgan/models/sgan-p-models", file_) for file_ in filenames
 ]
 for path in paths:
     checkpoint = torch.load(path, map_location=torch.device("cpu"))
     generator = get_generator(checkpoint)
     _args = AttrDict(checkpoint['args'])
-    #path = get_dset_path(_args.dataset_name, args.dset_type)
 
 app = FastAPI()
 

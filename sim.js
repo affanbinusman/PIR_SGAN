@@ -21,24 +21,29 @@ function getNewPredictions() {
 			}
 	})
 	.then(data => {
-			console.log(data);
+			predictions = data.preds;
 	});
 }
 
 
 function setup() {
 	createCanvas(400, 400);
-	frameRate(10);
+	frameRate(1);
 
-	persons.push(new Person(0, 0, 1, 1, "red"));
-	persons.push(new Person(350, 350, -1, -1, "blue"));
+	persons.push(new Person(210, 210, 1, 1, "red"));
+	persons.push(new Person(260, 260, -1, -1, "blue"));
 }
 
 function draw() {
 	background(0);
 
 	for (let i = 0; i < 2; i++) {
-		persons[i].updatePosition(0);
+		if (predictions.length != 0) {
+			persons[i].updatePosition(1, predictions[0][i][0], predictions[0][i][1]);
+		}
+		else {
+			persons[i].updatePosition(0);
+		}
 		persons[i].display();
 		
 		trajectories.push([timestep, i, persons[i].posX, persons[i].posY]);
@@ -49,7 +54,11 @@ function draw() {
 
 	}
 
-	if (trajectories.length >= (persons.length * 8)) {
+	predictions.shift();
+	console.log(predictions)
+
+	if (trajectories.length >= (persons.length * 8) &&
+		predictions.length == 0) {
 		getNewPredictions();
 	} 
 

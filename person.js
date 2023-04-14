@@ -27,6 +27,6 @@ class Person {
 		let c = color(this.color);
 		fill(c);
 		noStroke();
-		rect(this.posX, this.posY, 10, 10);
+		rect(this.posX, this.posY, 5, 5);
 	}
 }
