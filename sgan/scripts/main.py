@@ -77,10 +77,44 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def check_dist(trajs, robot_trajs, numofplayers, radius):
+    new_trajs = list()
+
+    # Loop runs for the number of players
+    for i in range(1, numofplayers + 1):
+
+        # Eculidean Distance
+        dist = np.sqrt(
+                np.square(trajs[-(i)][-2] - robot_trajs[-1][-2] ) +         # x coordinate
+                np.square(trajs[-(i)][-1] - robot_trajs[-1][-1] )          # y coordinate
+                )
+        #print(dist)
+
+        # If distance is within a certain radius, all the last 8 positions of person is appended in a new list called new_trajs
+        # Note: new_trajs containts 8 positions of player i THEN player i+1 (if the criteria is met that is)
+        if dist < radius:
+            person = trajs[-1][1]
+            l = 0
+            while l < len(trajs):
+                if trajs[l][1] == person:
+                    new_trajs.append(trajs[l])
+                l += 1
+
+    #print("new_trajs", new_trajs)
+    #print("Same" if len(new_trajs) == len(trajs) else "Not Same")
+
+    return new_trajs
+
 @app.post("/get_preds")
 async def response(data: dict):
     trajs = list(data.values())[0]
     trajs = [[float(val) for val in row] for row in trajs]
+    
+    robot_trajs = [[0, 0, 50, 50], [10, 0, 200, 200]]
+    radius = 50
+    numofplayers = 2        # Need this from front end
+    new_trajs = check_dist(trajs, robot_trajs, numofplayers, radius)        # How to integrate this new list. I tried replacing it and it wouldn't work if the list does not have info of all people
+    
     _, loader = data_loader(_args, path, np.asarray(trajs))
     preds = evaluate2(_args, loader, generator, 1)
     return {"preds": preds.tolist()}
