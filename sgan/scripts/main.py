@@ -109,19 +109,20 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
 async def response(data: dict):
     ptrajs = data['ptrajs']
     ptrajs = [[float(val) for val in row] for row in ptrajs]
-
     rtrajs = data['rtrajs']
-    ptrajs = [[float(val) for val in row] for row in rtrajs]
+    rtrajs = [[float(val) for val in row] for row in rtrajs]
 
-    radius = 50
+    radius = 10
     numofplayers = int(data['numberOfPeople'])
     new_trajs = check_dist(ptrajs, rtrajs, numofplayers, radius)
 
+    assert(len(new_trajs) % 8 == 0)
+
     # check if there are no collisions happening
-    if (len(new_trajs) == 1):
+    if (len(new_trajs) == 8):
         return {"preds": 0}
 
-    _, loader = data_loader(_args, path, np.asarray(trajs))
+    _, loader = data_loader(_args, path, np.asarray(new_trajs))
     preds = evaluate2(_args, loader, generator, 1)
 
     return {"preds": preds.tolist()}
