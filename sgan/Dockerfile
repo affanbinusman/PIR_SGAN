@@ -12,8 +12,9 @@ RUN python3.7 -m pip install torchvision==0.12.0
 RUN python3.7 -m pip install fastapi
 RUN python3.7 -m pip install uvicorn
 
-ADD "https://api.github.com/repos/affanbinusman/PIR_SGAN/commits?per_page=1" latest_commit
-RUN curl -sLO "https://github.com/affanbinusman/PIR_SGAN/archive/main.zip" && unzip main.zip
+ADD "https://api.github.com/repos/affanbinusman/PIR_SGAN/commits/calculate-distance?per_page=1" latest_commit
+RUN curl -sLO "https://github.com/affanbinusman/PIR_SGAN/archive/calculate-distance.zip" && unzip calculate-distance.zip
+RUN mv /PIR_SGAN-calculate-distance /PIR_SGAN-main
 
 WORKDIR /PIR_SGAN-main/sgan
 
