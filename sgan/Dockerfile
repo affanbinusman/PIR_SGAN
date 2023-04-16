@@ -17,7 +17,5 @@ RUN curl -sLO "https://github.com/affanbinusman/PIR_SGAN/archive/main.zip" && un
 
 WORKDIR /PIR_SGAN-main/sgan
 
-#RUN python3.7 -m pip install -r requirements.txt
-
 RUN sh scripts/download_data.sh
 RUN sh scripts/download_models.sh
