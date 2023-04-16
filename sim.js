@@ -3,7 +3,7 @@ var trajectories = [];
 var predictions = [];
 var timestep = 0;
 var requestMade = false;
-const numberOfPeople = 10;
+const numberOfPeople = 2;
 
 function getNewPredictions() {
 	const data = {"data": trajectories};
@@ -32,7 +32,7 @@ function getNewPredictions() {
 
 function setup() {
 	createCanvas(400, 400);
-	frameRate(10);
+	frameRate(1);
 
 	for (let i  = 0; i < numberOfPeople; i++) {
 		persons.push(new Person(randomGaussian(200, 50), randomGaussian(200, 50),
