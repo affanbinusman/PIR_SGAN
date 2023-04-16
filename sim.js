@@ -34,9 +34,14 @@ function getNewPredictions() {
 		}
 	})
 	.then(data => {
-		predictions = data.preds;
-		if (data.preds == 0) 
+		console.log(data)
+		if (data.preds == 0) {
 			ptrajs = [];
+			predictions = [];
+		}
+		else {
+			predictions = data.preds;
+		}
 		loop();
 	});
 }
@@ -78,7 +83,7 @@ function draw() {
 		}
 		persons[i].display();
 		
-		ptrajs.push([timestep, i + 1, persons[i].posX, persons[i].posY]);
+		ptrajs.push([timestep, i, persons[i].posX, persons[i].posY]);
 
 		if (ptrajs.length > (persons.length * 8)) {
 			ptrajs.shift();
