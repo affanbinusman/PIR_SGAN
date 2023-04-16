@@ -50,12 +50,10 @@ def evaluate2(args, loader, generator, num_samples):
                 pred_traj_fake = relative_to_abs(
                     pred_traj_fake_rel, obs_traj[-1]
                 )
-                #print(f"obs_traj of size {len(obs_traj)}:")
-                #print(obs_traj)
-                #print("pred_traj_fake:")
-                #print(pred_traj_fake)
 
         return pred_traj_fake
+
+
 dir_name = "/PIR_SGAN-main/sgan/models/sgan-models"
 filenames = os.listdir(dir_name)
 filenames.sort()
