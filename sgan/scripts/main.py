@@ -79,9 +79,10 @@ app.add_middleware(
 
 def check_dist(trajs, robot_trajs, numofplayers, radius):
     new_trajs = robot_trajs
+    plist = []
 
     # Loop runs for the number of players
-    for i in range(1, numofplayers + 1):
+    for i in range(numofplayers, 0, -1):
 
         # Eculidean Distance
         dist = np.sqrt(
@@ -94,6 +95,7 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
         # Note: new_trajs containts 8 positions of player i THEN player i+1 (if the criteria is met that is)
         if dist < radius:
             person = trajs[-i][1]
+            plist.append(person)
             l = 0
             while l < len(trajs):
                 if trajs[l][1] == person:
@@ -103,7 +105,7 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
     #print("new_trajs", new_trajs)
     #print("Same" if len(new_trajs) == len(trajs) else "Not Same")
 
-    return new_trajs
+    return new_trajs, plist
 
 @app.post("/get_preds")
 async def response(data: dict):
@@ -112,17 +114,21 @@ async def response(data: dict):
     rtrajs = data['rtrajs']
     rtrajs = [[float(val) for val in row] for row in rtrajs]
 
-    radius = 10
+    radius = int(data["radius"])
     numofplayers = int(data['numberOfPeople'])
-    new_trajs = check_dist(ptrajs, rtrajs, numofplayers, radius)
+    new_trajs, plist = check_dist(ptrajs, rtrajs, numofplayers, radius)
 
     assert(len(new_trajs) % 8 == 0)
+    
+    preds = None
 
     # check if there are no collisions happening
     if (len(new_trajs) == 8):
-        return {"preds": 0}
+        return {"res": 0, "plist": plist, "preds": preds}
 
+    assert(len(plist) != 0)
+    
     _, loader = data_loader(_args, path, np.asarray(new_trajs))
     preds = evaluate2(_args, loader, generator, 1)
 
-    return {"preds": preds.tolist()}
+    return {"res": 1, "plist": plist, "preds": preds.tolist()}

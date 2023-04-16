@@ -6,15 +6,19 @@ var rpath = [];
 
 var ptrajs = [];
 var predictions = [];
+var plist = []
 
 var timestep = 0;
-const numberOfPeople = 2;
+
+const numberOfPeople = 10;
+const radius = 50;
 
 function getNewPredictions() {
 
 	const data = {
 		"numberOfPeople": numberOfPeople,
-		"ptrajs": ptrajs, 
+		"radius": radius,
+		"ptrajs": ptrajs,
 		"rtrajs": rtrajs
 	};
 	
@@ -35,12 +39,14 @@ function getNewPredictions() {
 	})
 	.then(data => {
 		console.log(data)
-		if (data.preds == 0) {
+		if (data.res == 0) {
 			ptrajs = [];
 			predictions = [];
+			plist = [];
 		}
 		else {
 			predictions = data.preds;
+			plist = data.plist;
 		}
 		loop();
 	});
@@ -52,8 +58,8 @@ function setup() {
 	frameRate(1);
 
 	// create robot
-	let startX = random(400);
-	let startY = random(400);
+	let startX = random(100, 300);
+	let startY = random(100, 300);
 	let goalX = 400 - startX;
 	let goalY = 400 - startY;
 	robot = new Robot(startX, startY, goalX, goalY);
@@ -74,9 +80,11 @@ function draw() {
 	if (rtrajs.length > 8)
 		rtrajs.shift();
 
+	let pidx = 0;
 	for (let i = 0; i < numberOfPeople; i++) {
-		if (predictions.length != 0) {
-			persons[i].updatePosition(1, predictions[0][i][0], predictions[0][i][1]);
+		if (predictions.length != 0 && i == plist[pidx]) {
+			persons[i].updatePosition(1, predictions[0][pidx+1][0], predictions[0][pidx+1][1]);
+			pidx += 1;
 		}
 		else {
 			persons[i].updatePosition(0);
