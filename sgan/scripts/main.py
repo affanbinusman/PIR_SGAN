@@ -78,7 +78,7 @@ app.add_middleware(
 )
 
 def check_dist(trajs, robot_trajs, numofplayers, radius):
-    new_trajs = list()
+    new_trajs = robot_trajs
 
     # Loop runs for the number of players
     for i in range(1, numofplayers + 1):
@@ -93,7 +93,7 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
         # If distance is within a certain radius, all the last 8 positions of person is appended in a new list called new_trajs
         # Note: new_trajs containts 8 positions of player i THEN player i+1 (if the criteria is met that is)
         if dist < radius:
-            person = trajs[-1][1]
+            person = trajs[-i][1]
             l = 0
             while l < len(trajs):
                 if trajs[l][1] == person:
@@ -107,14 +107,21 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
 
 @app.post("/get_preds")
 async def response(data: dict):
-    trajs = list(data.values())[0]
-    trajs = [[float(val) for val in row] for row in trajs]
-    
-    robot_trajs = [[0, 0, 50, 50], [10, 0, 200, 200]]
+    ptrajs = data['ptrajs']
+    ptrajs = [[float(val) for val in row] for row in ptrajs]
+
+    rtrajs = data['rtrajs']
+    ptrajs = [[float(val) for val in row] for row in rtrajs]
+
     radius = 50
-    numofplayers = 2        # Need this from front end
-    new_trajs = check_dist(trajs, robot_trajs, numofplayers, radius)        # How to integrate this new list. I tried replacing it and it wouldn't work if the list does not have info of all people
-    
+    numofplayers = int(data['numberOfPeople'])
+    new_trajs = check_dist(ptrajs, rtrajs, numofplayers, radius)
+
+    # check if there are no collisions happening
+    if (len(new_trajs) == 1):
+        return {"preds": 0}
+
     _, loader = data_loader(_args, path, np.asarray(trajs))
     preds = evaluate2(_args, loader, generator, 1)
+
     return {"preds": preds.tolist()}
