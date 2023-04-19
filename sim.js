@@ -48,6 +48,64 @@ function getNewPredictions() {
 			predictions = data.preds;
 			plist = data.plist;
 		}
+		//loop();
+	});
+}
+
+
+function setRobotGoalPosition() {
+	const data = {
+		"goalX": robot.goalX,
+		"goalY": robot.goalY
+	};
+	
+	fetch("http://localhost:8000/set_goal", {
+		method: 'POST',
+		headers: {
+				'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	})
+	.then(response => {
+		if (response.ok) {
+				return response.json();
+		}
+		else {
+				throw new Error("barf!");
+		}
+	})
+	.then(data => {
+		console.log(data)
+	});
+}
+
+
+
+function getRobotPositions() {
+	const data = {
+		"ptrajs":ptrajs,
+		"predictions":predictions,
+		"rtrajs": rtrajs
+	};
+	
+	fetch("http://localhost:8000/get_robot", {
+		method: 'POST',
+		headers: {
+				'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(data)
+	})
+	.then(response => {
+		if (response.ok) {
+				return response.json();
+		}
+		else {
+				throw new Error("barf!");
+		}
+	})
+	.then(data => {
+		console.log(data)
+		rpath = data.rpath;	
 		loop();
 	});
 }
@@ -69,11 +127,16 @@ function setup() {
 									randomGaussian(0), randomGaussian(0)));
 	}
 
+	setRobotGoalPosition();
 }
 
 function draw() {
 	background(0);
-
+	
+	if (rpath.length > 0) {
+		robot.updatePosition(rpath[0][0], rpath[0][1]);
+		rpath.shift();
+	}
 	robot.display()
 	rtrajs.push([timestep, 0, robot.posX, robot.posY]);
 
@@ -104,6 +167,7 @@ function draw() {
 	if (ptrajs.length >= (numberOfPeople * 8) &&
 		predictions.length == 0) {
 		getNewPredictions();
+		getRobotPositions();
 		noLoop();
 	} 
 
