@@ -82,9 +82,29 @@ function setRobotGoalPosition() {
 
 
 function getRobotPositions() {
+	
+	// create array to store next 8 positions of all people
+	let ppath = []
+
+	let idx = 0;
+	for (let i = 0; i < numberOfPeople; i++) {
+		let px = persons[i].posX;
+		let py = persons[i].posY;
+		for (let j = 0; j < 8; j++) {
+			if (predictions.length != 0 && i == idx) {
+				ppath.append([i, predictions[j][idx+1][0], predictions[j][idx+1][1]]);
+			}
+			else {
+				px += persons[i].mX;
+				py += persons[i].mY;
+				ppath.append([i, px, py]);
+			}
+		}
+	}
+
 	const data = {
 		"ptrajs":ptrajs,
-		"predictions":predictions,
+		"ppath":ppath,
 		"rtrajs": rtrajs
 	};
 	
@@ -138,7 +158,7 @@ function draw() {
 		rpath.shift();
 	}
 	robot.display()
-	rtrajs.push([timestep, 0, robot.posX, robot.posY]);
+	rtrajs.push([timestep, numberOfPeople + 1, robot.posX, robot.posY]);
 
 	if (rtrajs.length > 8)
 		rtrajs.shift();
