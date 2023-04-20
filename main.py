@@ -4,14 +4,14 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import torch
 import sys
-sys.path.append("/PIR_SGAN-main/sgan/")
+sys.path.append("/PIR_SGAN-main")
 from attrdict import AttrDict
 
 import numpy as np
-from sgan.data.loader import data_loader
-from sgan.models import TrajectoryGenerator
-from sgan.losses import displacement_error, final_displacement_error
-from sgan.utils import relative_to_abs, get_dset_path
+from sgan.sgan.data.loader import data_loader
+from sgan.sgan.models import TrajectoryGenerator
+from sgan.sgan.losses import displacement_error, final_displacement_error
+from sgan.sgan.utils import relative_to_abs, get_dset_path
 
 def get_generator(checkpoint):
     args = AttrDict(checkpoint['args'])
@@ -119,7 +119,7 @@ async def response(data: dict):
     new_trajs, plist = check_dist(ptrajs, rtrajs, numofplayers, radius)
 
     assert(len(new_trajs) % 8 == 0)
-    
+
     preds = None
 
     # check if there are no collisions happening
@@ -127,7 +127,7 @@ async def response(data: dict):
         return {"res": 0, "plist": plist, "preds": preds}
 
     assert(len(plist) != 0)
-    
+
     _, loader = data_loader(_args, path, np.asarray(new_trajs))
     preds = evaluate2(_args, loader, generator, 1)
 
