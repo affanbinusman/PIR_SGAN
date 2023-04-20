@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import torch
 import sys
-sys.path.append("/PIR_SGAN-main")
+sys.path.append("/PIR_SGAN-main/sgan")
+sys.path.append("/PIR_SGAN/rrt_mpc")
 from attrdict import AttrDict
 
 import numpy as np
@@ -108,7 +109,7 @@ def check_dist(trajs, robot_trajs, numofplayers, radius):
     return new_trajs, plist
 
 @app.post("/get_preds")
-async def response(data: dict):
+async def get_preds(data: dict):
     ptrajs = data['ptrajs']
     ptrajs = [[float(val) for val in row] for row in ptrajs]
     rtrajs = data['rtrajs']
@@ -132,3 +133,13 @@ async def response(data: dict):
     preds = evaluate2(_args, loader, generator, 1)
 
     return {"res": 1, "plist": plist, "preds": preds.tolist()}
+
+@app.post("/set_goal")
+async def set_goal(data: dict):
+    return {"res":0}
+
+
+@app.post("/get_robot")
+async def get_robot(data: dict):
+    rpath = []
+    return {"rpath": rpath}
