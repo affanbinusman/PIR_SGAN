@@ -100,6 +100,7 @@ function getRobotPositions() {
 				ppath.append([i, px, py]);
 			}
 		}
+		idx++;
 	}
 
 	const data = {
