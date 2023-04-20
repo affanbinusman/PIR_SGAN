@@ -148,8 +148,7 @@ async def set_goal(data: dict):
 async def get_robot(data: dict):
     # data contains:
     # ptrajs: Array of previous 8 positions of all the humans
-    # predictions: Array of 8 next positions (might be 0). 
-    #   the array only contains the paths of persons that the model thinks need to move
+    # ppath: Array of 8 next positions of all people. 
     # rpath: Array of the previous 8 positions of the robot
     rpath = [] # use this list for sending back the 8 next positions of the robot
     return {"rpath": rpath}
