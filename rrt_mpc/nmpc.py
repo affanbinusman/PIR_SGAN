@@ -7,12 +7,12 @@ import time
 SIM_TIME = 15.
 TIMESTEP = 0.1
 NUMBER_OF_TIMESTEPS = int(SIM_TIME/TIMESTEP)
-ROBOT_RADIUS = 1.5
+ROBOT_RADIUS = 0.5
 VMAX = 2
 VMIN = 0.1
 
 # collision cost parameters
-Qc = 6.
+Qc = 1.5
 kappa = 4.
 
 # nmpc parameters

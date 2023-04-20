@@ -20,6 +20,13 @@ NMPC_TIMESTEP = 0.3
 upper_bound = [(1/np.sqrt(2)) * VMAX] * HORIZON_LENGTH * 2
 lower_bound = [-(1/np.sqrt(2)) * VMAX] * HORIZON_LENGTH * 2
 
+def plot_circle(x, y, size, color="-b"):  # pragma: no cover
+    deg = list(range(0, 360, 5))
+    deg.append(0)
+    xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
+    yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
+    plt.plot(xl, yl, color)
+
 class robot:
     def __init__(self, start_pos, ID) -> None:
 
@@ -32,6 +39,8 @@ class robot:
         self.state=[self.cur_pos[0], self.cur_pos[1], 0, 0]
         self.reached_goal=False
         self.obstacle_list=[]
+        self.temp_goal=[0,0]
+        self.reached_temp_goal = False
 
     def update_goal(self, goal):
         self.goal=goal
@@ -84,15 +93,28 @@ class robot:
         cyaw=[]
         cx=[]
         cy=[]
-        cx1, cy1, cyaw1, ck, s = calc_spline_course(
-                x_path, y_path, ds=0.1)
-        cx= [round(num, 1) for num in cx1]
-        cy= [round(num, 1) for num in cy1]
-        cyaw= [round(num, 1) for num in cyaw1]
+        ds=0.1
+        # cx1, cy1, cyaw1, ck, s = calc_spline_course(
+        #         x_path, y_path, ds=0.1)
+        # cx= [round(num, 1) for num in cx1]
+        # cy= [round(num, 1) for num in cy1]
+        # cyaw= [round(num, 1) for num in cyaw1]
+        sp = Spline2D(x_path, y_path)
+        s = np.arange(0, sp.s[-1], ds)
+
+        cx, yy, cyaw, ck = [], [], [], []
+        for i_s in s:
+            ix, iy = sp.calc_position(i_s)
+            cx.append(ix)
+            cy.append(iy)
+            cyaw.append(sp.calc_yaw(i_s))
+            ck.append(sp.calc_curvature(i_s))
         self.path_x=cx
         self.path_y=cy
         self.path_yaw=cyaw
         self.path_k=ck
+        self.obstacle_list.append([4,4,2])
+
 
         # plt.clf()
     # for stopping simulation with the esc key.
@@ -101,6 +123,9 @@ class robot:
         lambda event: [exit(0) if event.key == 'escape' else None])
 
         plt.plot(cx,cy,'-y')
+
+        for iter in range(len(self.obstacle_list)):
+            plot_circle(self.obstacle_list[iter][0], self.obstacle_list[iter][1], self.obstacle_list[iter][2])
         plt.pause(0.1)
 
     plt.show()
@@ -108,23 +133,57 @@ class robot:
 
 
     print("FOUND Path!!")
-    
+    def get_distance_with_robot(self, x_tar, y_tar):
+        dx = x_tar - self.cur_pos[0]
+        dy = y_tar - self.cur_pos[1]
+        return math.hypot(dx, dy)
+
+    def check_goal_inside_obstacle(self, goal_pos):
+        goal_inside_obstacle = False
+        for iter in range(len(self.obstacle_list)):
+            dx = goal_pos[0] - self.obstacle_list[iter][0]
+            dy = goal_pos[1] - self.obstacle_list[iter][1]
+            dist_from_center=math.hypot(dx, dy)
+        
+            if dist_from_center< self.obstacle_list[iter][2]:
+                print("Goal inside obstacle")
+                goal_inside_obstacle = True
+
+        return goal_inside_obstacle
+            
     def drive_along_path(self):
         target_speed = 10.0 / 3.6  # simulation parameter km/h -> m/s
+        print(len(self.path_x))
+        # sp = calc_speed_profile(self.path_yaw, target_speed
+        goal_iter=0
+        for iter in range(1,len(self.path_x)):
+            if not self.check_goal_inside_obstacle([self.path_x[goal_iter], self.path_y[goal_iter]]):
+                self.temp_goal[0] =self.path_x[goal_iter]
+                self.temp_goal[1] =self.path_y[goal_iter]
+            else:
+                goal_iter+=1
+                continue
+            if self.get_distance_with_robot(self.temp_goal[0],self.temp_goal[1])>1:
+                self.reached_temp_goal=False
+                while(not self.reached_temp_goal):
+                    self.do_simulation()            
+            goal_iter+=1
+        self.reached_goal=True
 
-        # sp = calc_speed_profile(self.path_yaw, target_speed)
-        while(not self.reached_goal):
-            self.do_simulation()
 
     def do_simulation(self):
 
         start = np.array([self.state[0], self.state[1]])
-        p_desired = np.array([self.goal[0], self.goal[1]])
+        p_desired = np.array([self.temp_goal[0], self.temp_goal[1]])
         NUMBER_OF_TIMESTEPS=1
         goal_thresh=0.5
         robot_state = start
         robot_state_history = np.empty((4, NUMBER_OF_TIMESTEPS))
-        plt.plot(self.goal[1],self.goal[0],'xk')
+        plt.plot(self.temp_goal[0],self.temp_goal[1],'xg')
+        plt.plot(self.start_position[1],self.start_position[0],'xk')
+        print("Temp GOAL", self.goal)
+        print("Start", self.start_position)
+
 
         for i in range(NUMBER_OF_TIMESTEPS):
             # predict the obstacles' position in future
@@ -133,7 +192,7 @@ class robot:
             for obs in self.obstacle_list:
                 
                 pos=[]
-                print("hellooo",obs, ind)
+                # print("hellooo",obs, ind)
                 obstacle_predictions[ind][0] = obs[0]
                 obstacle_predictions[ind][1] = obs[1]
                 obstacle_predictions[ind][2] = 0
@@ -158,13 +217,15 @@ class robot:
             vel, velocity_profile = compute_velocity(
                 robot_state, obstacle_predictions, xref)
             robot_state = update_state(robot_state, vel, TIMESTEP)
-            print("Robot State :", robot_state)
+            # print("Robot State :", robot_state)
             robot_state_history[:2, i] = robot_state
             self.state=[robot_state[0],robot_state[1], vel[0], vel[1]]
             self.cur_pos=self.state[:2]
         if np.linalg.norm(np.array([self.cur_pos[0], self.cur_pos[1]])- p_desired)<0.2:
-            self.reached_goal=True
-            print("REACHED GOAL")
+
+            print("REACHED temporary GOAL")
+            self.reached_temp_goal =True
+
         plt.gcf().canvas.mpl_connect(
         'key_release_event',
         lambda event: [exit(0) if event.key == 'escape' else None])
