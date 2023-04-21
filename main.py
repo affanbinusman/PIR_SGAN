@@ -145,7 +145,7 @@ async def set_goal(data: dict):
     goalX = float(data.get("goalX"))
     goalY = float(data.get("goalY"))
     r1.update_goal([goalX, goalY])
-    return {"res": data}
+    return {"res": 0}
 
 
 @app.post("/get_robot")
