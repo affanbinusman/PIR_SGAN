@@ -13,6 +13,9 @@ from sgan.sgan.data.loader import data_loader
 from sgan.sgan.models import TrajectoryGenerator
 from sgan.sgan.losses import displacement_error, final_displacement_error
 from sgan.sgan.utils import relative_to_abs, get_dset_path
+from rrt_mpc.robot import robot
+
+r1 = robot([0, 0], 1)
 
 def get_generator(checkpoint):
     args = AttrDict(checkpoint['args'])
@@ -139,9 +142,8 @@ async def set_goal(data: dict):
     # data contains:
     # goalX: float
     # goalY: float
-
-    # no need to return anything
-    return {"res":0}
+    r1.update_goal([data.get("goalX"), data.get("goalY")])
+    return {"res": 0}
 
 
 @app.post("/get_robot")
@@ -150,5 +152,13 @@ async def get_robot(data: dict):
     # ptrajs: Array of previous 8 positions of all the humans
     # ppath: Array of 8 next positions of all people. 
     # rpath: Array of the previous 8 positions of the robot
-    rpath = [] # use this list for sending back the 8 next positions of the robot
+    
+    # r1.obstacle_list = data['ptrajs']
+    # r1.path = data['ppath']
+    # r1.rpath = data['rpath']
+    r1.find_path_to_goal(True)
+    r1.drive_along_path()
+    rpath = []
+    for i in range(8):
+        rpath.append(r1.path_x[i], r1.path_y[i])
     return {"rpath": rpath}
