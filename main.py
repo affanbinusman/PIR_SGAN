@@ -156,7 +156,7 @@ async def get_robot(data: dict):
     # ppath: Array of 8 next positions of all people. 
     # rpath: Array of the previous 8 positions of the robot
     num_of_steps =8
-    ptrajs = data['ptrajs']
+    ptrajs = data['ppath']
     num_persons = len(ptrajs/num_of_steps)
     # obs_sta]=[]
     obstacles_list=[]
