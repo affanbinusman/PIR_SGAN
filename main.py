@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import torch
 import sys
+import math
 sys.path.append("/PIR_SGAN-main/sgan")
 sys.path.append("/PIR_SGAN-main/rrt_mpc")
 from attrdict import AttrDict
@@ -154,8 +155,28 @@ async def get_robot(data: dict):
     # ptrajs: Array of previous 8 positions of all the humans
     # ppath: Array of 8 next positions of all people. 
     # rpath: Array of the previous 8 positions of the robot
+    num_of_steps =8
+    ptrajs = data['ptrajs']
+    num_persons = len(ptrajs/num_of_steps)
+    # obs_sta]=[]
+    obstacles_list=[]
+    person_iter=0
+    for iter in range(num_persons):
+        x_start = ptrajs[iter][2]
+        y_start = ptrajs[iter][2]
+
+        x_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][2]
+        y_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][3]
+
+        center_x = (x_start+x_end)/2
+        center_y = (y_start+y_end)/2
+        dx=x_start-center_x
+        dy=y_start-center_y
+        obs_radius=math.hypot(dx, dy)
+        obstacles_list.append([center_x, center_y, obs_radius])
+
+    r1.obstacle_list = obstacles_list
     
-    # r1.obstacle_list = data['ptrajs']
     # r1.path = data['ppath']
     # r1.rpath = data['rpath']
     r1.find_path_to_goal(True)
