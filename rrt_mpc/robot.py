@@ -93,7 +93,7 @@ class robot:
         x_path.reverse()
         y_path.reverse()
 
-        goal = [x_path[-1], y_path[-1]]
+        # goal = [x_path[-1], y_path[-1]]
         cyaw=[]
         cx=[]
         cy=[]
