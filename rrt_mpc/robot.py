@@ -14,6 +14,7 @@ VMIN = 0.1
 Qc = 5.
 kappa = 4.
 
+
 # nmpc parameters
 HORIZON_LENGTH = int(4)
 NMPC_TIMESTEP = 0.3
@@ -41,6 +42,9 @@ class robot:
         self.obstacle_list=[]
         self.temp_goal=[0,0]
         self.reached_temp_goal = False
+        self.path_iter=0
+        self.last_k_steps=[]
+        self.pos_history=[]
 
     def update_goal(self, goal):
         self.goal=goal
@@ -157,9 +161,11 @@ class robot:
         # sp = calc_speed_profile(self.path_yaw, target_speed
         goal_iter=0
         for iter in range(1,len(self.path_x)):
+
             if not self.check_goal_inside_obstacle([self.path_x[goal_iter], self.path_y[goal_iter]]):
                 self.temp_goal[0] =self.path_x[goal_iter]
                 self.temp_goal[1] =self.path_y[goal_iter]
+                self.path_iter
             else:
                 goal_iter+=1
                 continue
@@ -169,6 +175,33 @@ class robot:
                     self.do_simulation()            
             goal_iter+=1
         self.reached_goal=True
+
+    def get_next_steps(self, num_of_steps):
+        steps_iter=0
+        start_ind=self.path_iter
+        goal_iter = self.path_iter
+        k_steps_complete =False
+        pos_history=[]
+        while (not k_steps_complete) and (self.path_iter<len(self.path_x)):
+            if not self.check_goal_inside_obstacle([self.path_x[goal_iter], self.path_y[goal_iter]]):
+                self.temp_goal[0] =self.path_x[goal_iter]
+                self.temp_goal[1] =self.path_y[goal_iter]
+            else:
+                goal_iter+=1
+                continue
+            if self.get_distance_with_robot(self.temp_goal[0],self.temp_goal[1])>1:
+                self.reached_temp_goal=False
+                while(not self.reached_temp_goal):
+                    self.do_simulation() 
+                steps_iter+=1
+                pos_history.append([self.cur_pos])
+                if steps_iter==num_of_steps:
+                    k_steps_complete=True
+                    self.path_iter=goal_iter+1
+            goal_iter+=1
+
+        return pos_history        
+
 
 
     def do_simulation(self):
@@ -271,4 +304,4 @@ def calc_speed_profile(cyaw, target_speed):
 r1=robot([0,0],1)
 r1.update_goal([15,10])
 r1.find_path_to_goal(True)
-r1.drive_along_path()
+print(r1.get_next_steps(8))
