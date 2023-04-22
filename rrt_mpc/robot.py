@@ -2,7 +2,7 @@
 import numpy as np
 from rrt_plan import *
 import math
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from nmpc import *
 
 
@@ -26,7 +26,7 @@ def plot_circle(x, y, size, color="-b"):  # pragma: no cover
     deg.append(0)
     xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
     yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
-    plt.plot(xl, yl, color)
+    ##plt.plot(xl, yl, color)
 
 class robot:
     def __init__(self, start_pos, ID) -> None:
@@ -87,8 +87,8 @@ class robot:
                         x_path.append(x)
                         y_path.append(y)
                     iter=1
-                plt.plot(x_path, y_path, 'r--')
-                plt.grid(True)
+                #plt.plot(x_path, y_path, 'r--')
+                #plt.grid(True)
 
         x_path.reverse()
         y_path.reverse()
@@ -120,19 +120,19 @@ class robot:
         # self.obstacle_list.append([4,4,2])
 
 
-        # plt.clf()
+        # #plt.clf()
     # for stopping simulation with the esc key.
-        plt.gcf().canvas.mpl_connect(
+        #plt.gcf().canvas.mpl_connect(
         'key_release_event',
         lambda event: [exit(0) if event.key == 'escape' else None])
 
-        plt.plot(cx,cy,'-y')
+        #plt.plot(cx,cy,'-y')
 
         for iter in range(len(self.obstacle_list)):
             plot_circle(self.obstacle_list[iter][0], self.obstacle_list[iter][1], self.obstacle_list[iter][2])
-        plt.pause(0.1)
+        #plt.pause(0.1)
 
-    plt.show()
+    #plt.show()
 
 
 
@@ -212,8 +212,8 @@ class robot:
         goal_thresh=0.5
         robot_state = start
         robot_state_history = np.empty((4, NUMBER_OF_TIMESTEPS))
-        plt.plot(self.temp_goal[0],self.temp_goal[1],'xg')
-        plt.plot(self.start_position[1],self.start_position[0],'xk')
+        #plt.plot(self.temp_goal[0],self.temp_goal[1],'xg')
+        #plt.plot(self.start_position[1],self.start_position[0],'xk')
         print("Temp GOAL", self.goal)
         print("Start", self.start_position)
 
@@ -259,12 +259,12 @@ class robot:
             print("REACHED temporary GOAL")
             self.reached_temp_goal =True
 
-        plt.gcf().canvas.mpl_connect(
+        #plt.gcf().canvas.mpl_connect(
         'key_release_event',
         lambda event: [exit(0) if event.key == 'escape' else None])
 
-        plt.plot(robot_state[0], robot_state[1], 'or')
-        plt.pause(0.1)
+        #plt.plot(robot_state[0], robot_state[1], 'or')
+        #plt.pause(0.1)
 
 
     def get_sensor_readings_and_update(self):

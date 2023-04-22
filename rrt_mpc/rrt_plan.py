@@ -1,6 +1,6 @@
 import math
 import sys
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import pathlib
 sys.path.append(str(pathlib.Path(__file__).parent.parent))
 
@@ -269,10 +269,10 @@ def main():
                     x_path.append(x)
                     y_path.append(y)
                 iter=1
-            plt.plot(x_path, y_path, 'r--')
-            plt.grid(True)
+            #plt.plot(x_path, y_path, 'r--')
+            #plt.grid(True)
     
-    # plt.show()
+    # #plt.show()
     ax=x_path
     ay=y_path
     print("X_path",ax)
@@ -287,10 +287,10 @@ def main():
     print("     ",cx1)
     print("     ",cy1)
     print("     ",cyaw1)
-    plt.figure
-    plt.plot(cx1,cy1,'-r')
-    plt.plot(ax,ay,'xb')
-    # plt.show()
+    #plt.figure
+    #plt.plot(cx1,cy1,'-r')
+    #plt.plot(ax,ay,'xb')
+    # #plt.show()
 
 if __name__ == '__main__':
     main()
