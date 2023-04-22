@@ -301,7 +301,7 @@ def calc_speed_profile(cyaw, target_speed):
 
 
 
-r1=robot([0,0],1)
-r1.update_goal([15,10])
-r1.find_path_to_goal(True)
-print(r1.get_next_steps(8))
+# r1=robot([0,0],1)
+# r1.update_goal([15,10])
+# r1.find_path_to_goal(True)
+# print(r1.get_next_steps(8))
