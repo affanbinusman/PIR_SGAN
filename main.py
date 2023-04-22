@@ -5,7 +5,7 @@ import os
 import torch
 import sys
 sys.path.append("/PIR_SGAN-main/sgan")
-sys.path.append("/PIR_SGAN/rrt_mpc")
+sys.path.append("/PIR_SGAN-main/rrt_mpc")
 from attrdict import AttrDict
 
 import numpy as np
