@@ -159,49 +159,49 @@ class RRT:
             rnd = self.Node(self.end.x, self.end.y)
         return rnd
 
-    def draw_graph(self, rnd=None):
-        #plt.clf()
-        # for stopping simulation with the esc key.
-        #plt.gcf().canvas.mpl_connect(
-            # 'key_release_event',
-            # lambda event: [exit(0) if event.key == 'escape' else None])
-        if rnd is not None:
-            #plt.plot(rnd.x, rnd.y, "^k")
-            if self.robot_radius > 0.0:
-                self.plot_circle(rnd.x, rnd.y, self.robot_radius, '-r')
-        # for node in self.node_list:
-        #     if node.parent:
-                #plt.plot(node.path_x, node.path_y, "-g")
+    # def draw_graph(self, rnd=None):
+    #     #plt.clf()
+    #     # for stopping simulation with the esc key.
+    #     #plt.gcf().canvas.mpl_connect(
+    #         # 'key_release_event',
+    #         # lambda event: [exit(0) if event.key == 'escape' else None])
+    #     if rnd is not None:
+    #         #plt.plot(rnd.x, rnd.y, "^k")
+    #         if self.robot_radius > 0.0:
+    #             self.plot_circle(rnd.x, rnd.y, self.robot_radius, '-r')
+    #     # for node in self.node_list:
+    #     #     if node.parent:
+    #             #plt.plot(node.path_x, node.path_y, "-g")
 
-        for (ox, oy, size) in self.obstacle_list:
-            self.plot_circle(ox, oy, size)
+    #     for (ox, oy, size) in self.obstacle_list:
+    #         self.plot_circle(ox, oy, size)
         
-        fov_r=0.5
-        # node=self.node
-        # self.plot_circle(node.path.x, node.path.y, fov_r '-b')
+    #     fov_r=0.5
+    #     # node=self.node
+    #     # self.plot_circle(node.path.x, node.path.y, fov_r '-b')
 
-        if self.play_area is not None:
-            #plt.plot([self.play_area.xmin, self.play_area.xmax,
-                      self.play_area.xmax, self.play_area.xmin,
-                      self.play_area.xmin],
-                     [self.play_area.ymin, self.play_area.ymin,
-                      self.play_area.ymax, self.play_area.ymax,
-                      self.play_area.ymin],
-                     "-k")
+    #     if self.play_area is not None:
+    #         #plt.plot([self.play_area.xmin, self.play_area.xmax,
+    #                   self.play_area.xmax, self.play_area.xmin,
+    #                   self.play_area.xmin],
+    #                  [self.play_area.ymin, self.play_area.ymin,
+    #                   self.play_area.ymax, self.play_area.ymax,
+    #                   self.play_area.ymin],
+    #                  "-k")
 
-        #plt.plot(self.start.x, self.start.y, "xr")
-        #plt.plot(self.end.x, self.end.y, "xr")
-        #plt.axis("equal")
-        #plt.axis([self.min_rand, self.max_rand, self.min_rand, self.max_rand])
-        #plt.grid(True)
-        #plt.pause(0.01)
+    #     #plt.plot(self.start.x, self.start.y, "xr")
+    #     #plt.plot(self.end.x, self.end.y, "xr")
+    #     #plt.axis("equal")
+    #     #plt.axis([self.min_rand, self.max_rand, self.min_rand, self.max_rand])
+    #     #plt.grid(True)
+    #     #plt.pause(0.01)
 
-    @staticmethod
-    def plot_circle(x, y, size, color="-b"):  # pragma: no cover
-        deg = list(range(0, 360, 5))
-        deg.append(0)
-        xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
-        yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
+    # @staticmethod
+    # def plot_circle(x, y, size, color="-b"):  # pragma: no cover
+    #     deg = list(range(0, 360, 5))
+    #     deg.append(0)
+    #     xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
+    #     yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
         #plt.plot(xl, yl, color)
 
     @staticmethod

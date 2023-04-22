@@ -21,12 +21,12 @@ NMPC_TIMESTEP = 0.3
 upper_bound = [(1/np.sqrt(2)) * VMAX] * HORIZON_LENGTH * 2
 lower_bound = [-(1/np.sqrt(2)) * VMAX] * HORIZON_LENGTH * 2
 
-def plot_circle(x, y, size, color="-b"):  # pragma: no cover
-    deg = list(range(0, 360, 5))
-    deg.append(0)
-    xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
-    yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
-    ##plt.plot(xl, yl, color)
+# def plot_circle(x, y, size, color="-b"):  # pragma: no cover
+#     deg = list(range(0, 360, 5))
+#     deg.append(0)
+#     xl = [x + size * math.cos(np.deg2rad(d)) for d in deg]
+#     yl = [y + size * math.sin(np.deg2rad(d)) for d in deg]
+#     #plt.plot(xl, yl, color)
 
 class robot:
     def __init__(self, start_pos, ID) -> None:
@@ -120,7 +120,7 @@ class robot:
         # self.obstacle_list.append([4,4,2])
 
 
-        # #plt.clf()
+        # plt.clf()
     # for stopping simulation with the esc key.
         #plt.gcf().canvas.mpl_connect(
         # 'key_release_event',
@@ -128,8 +128,8 @@ class robot:
 
         #plt.plot(cx,cy,'-y')
 
-        for iter in range(len(self.obstacle_list)):
-            plot_circle(self.obstacle_list[iter][0], self.obstacle_list[iter][1], self.obstacle_list[iter][2])
+        # for iter in range(len(self.obstacle_list)):
+        #     plot_circle(self.obstacle_list[iter][0], self.obstacle_list[iter][1], self.obstacle_list[iter][2])
         #plt.pause(0.1)
 
     #plt.show()
