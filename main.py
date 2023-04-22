@@ -159,8 +159,8 @@ async def get_robot(data: dict):
     # r1.path = data['ppath']
     # r1.rpath = data['rpath']
     r1.find_path_to_goal(True)
-    r1.drive_along_path()
-    rpath = []
-    for i in range(8):
-        rpath.append(r1.path_x[i], r1.path_y[i])
+    rpath =r1.get_next_steps(8)
+    # rpath = []
+    # for i in range(8):
+    #     rpath.append(r1.path_x[i], r1.path_y[i])
     return {"rpath": rpath}
