@@ -163,14 +163,14 @@ class RRT:
         #plt.clf()
         # for stopping simulation with the esc key.
         #plt.gcf().canvas.mpl_connect(
-            'key_release_event',
-            lambda event: [exit(0) if event.key == 'escape' else None])
+            # 'key_release_event',
+            # lambda event: [exit(0) if event.key == 'escape' else None])
         if rnd is not None:
             #plt.plot(rnd.x, rnd.y, "^k")
             if self.robot_radius > 0.0:
                 self.plot_circle(rnd.x, rnd.y, self.robot_radius, '-r')
-        for node in self.node_list:
-            if node.parent:
+        # for node in self.node_list:
+        #     if node.parent:
                 #plt.plot(node.path_x, node.path_y, "-g")
 
         for (ox, oy, size) in self.obstacle_list:

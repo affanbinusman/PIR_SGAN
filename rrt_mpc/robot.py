@@ -123,8 +123,8 @@ class robot:
         # #plt.clf()
     # for stopping simulation with the esc key.
         #plt.gcf().canvas.mpl_connect(
-        'key_release_event',
-        lambda event: [exit(0) if event.key == 'escape' else None])
+        # 'key_release_event',
+        # lambda event: [exit(0) if event.key == 'escape' else None])
 
         #plt.plot(cx,cy,'-y')
 
@@ -260,8 +260,8 @@ class robot:
             self.reached_temp_goal =True
 
         #plt.gcf().canvas.mpl_connect(
-        'key_release_event',
-        lambda event: [exit(0) if event.key == 'escape' else None])
+        # 'key_release_event',
+        # lambda event: [exit(0) if event.key == 'escape' else None])
 
         #plt.plot(robot_state[0], robot_state[1], 'or')
         #plt.pause(0.1)
