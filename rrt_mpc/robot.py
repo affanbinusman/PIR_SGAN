@@ -51,7 +51,7 @@ class robot:
 
 
     def find_path_to_goal(self, show_animation):
-        self.obstacle_list=[[2,3,1]]  
+        # self.obstacle_list=[[2,3,1]]  
         fov_r=0.5
         x_path=[]
         y_path=[]
@@ -117,7 +117,7 @@ class robot:
         self.path_y=cy
         self.path_yaw=cyaw
         self.path_k=ck
-        self.obstacle_list.append([4,4,2])
+        # self.obstacle_list.append([4,4,2])
 
 
         # plt.clf()
