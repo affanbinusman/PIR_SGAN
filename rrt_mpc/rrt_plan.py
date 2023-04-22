@@ -76,8 +76,8 @@ class RRTStar(RRT):
                 else:
                     self.node_list.append(new_node)
 
-            if animation:
-                self.draw_graph(rnd)
+            # if animation:
+            #     self.draw_graph(rnd)
 
             if ((not self.search_until_max_iter)
                     and new_node):  # if reaches goal
@@ -262,7 +262,7 @@ def main():
         # Draw final path
         
         if show_animation:
-            rrt_star.draw_graph()
+            # rrt_star.draw_graph()
             iter=0
             for (x,y) in path:
                 if iter: 

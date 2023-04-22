@@ -78,15 +78,15 @@ class robot:
 
             # Draw final path
             
-            if show_animation:
-                # print("drawing graph")
-                rrt_star.draw_graph()
-                iter=0
-                for (x,y) in path:
-                    if iter: 
-                        x_path.append(x)
-                        y_path.append(y)
-                    iter=1
+            # if show_animation:
+            #     # print("drawing graph")
+            #     rrt_star.draw_graph()
+            #     iter=0
+            #     for (x,y) in path:
+            #         if iter: 
+            #             x_path.append(x)
+            #             y_path.append(y)
+            #         iter=1
                 #plt.plot(x_path, y_path, 'r--')
                 #plt.grid(True)
 
