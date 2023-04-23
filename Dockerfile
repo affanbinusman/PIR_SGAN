@@ -4,7 +4,7 @@ RUN apt -y update && apt -y upgrade
 RUN apt -y install python3.7 python3-pip curl wget unzip vim
 
 RUN python3.7 -m pip install attrdict==2.0.0
-RUN python3.7 -m pip install numpy==1.14.5
+RUN python3.7 -m pip install numpy==1.16.4
 RUN python3.7 -m pip install Pillow==6.2.0
 RUN python3.7 -m pip install six==1.11.0
 RUN python3.7 -m pip install torch==1.11.0
