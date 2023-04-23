@@ -38,7 +38,6 @@ function getNewPredictions() {
 		}
 	})
 	.then(data => {
-		console.log(data)
 		if (data.res == 0) {
 			ptrajs = [];
 			predictions = [];
@@ -158,7 +157,8 @@ function draw() {
 		robot.updatePosition(rpath[0][0], rpath[0][1]);
 		rpath.shift();
 	}
-	robot.display()
+	robot.display();
+	robot.displayGoal();
 	rtrajs.push([timestep, numberOfPeople + 1, robot.posX, robot.posY]);
 
 	if (rtrajs.length > 8)

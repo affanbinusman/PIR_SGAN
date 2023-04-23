@@ -25,9 +25,11 @@ class Person {
 	}
 
 	display() {
+		push();
 		let c = color(this.color);
 		fill(c);
 		noStroke();
 		rect(this.posX, this.posY, 5, 5);
+		pop();
 	}
 }
