@@ -63,6 +63,7 @@ def compute_velocity(robot_state, obstacle_predictions, xref):
 
 
 def compute_xref(start, goal, number_of_steps, timestep):
+    print(f"in compute_xref with args start={start}, goal={goal}, number_of_steps={number_of_steps}, timestep={timestep}")
     dir_vec = (goal - start)
     norm = np.linalg.norm(dir_vec)
     if norm < 0.1:

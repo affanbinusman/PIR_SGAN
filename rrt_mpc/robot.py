@@ -46,7 +46,11 @@ class robot:
         self.last_k_steps=[]
         self.pos_history=[]
 
-    def update_goal(self, goal):
+    def set_start_and_goal(self, start, goal):
+        self.cur_pos = start
+        self.state[0] = self.cur_pos[0]
+        self.state[1] = self.cur_pos[1]
+        self.start_position = start
         self.goal=goal
 
 
@@ -61,6 +65,8 @@ class robot:
         # Set Initial parameters
         # print(min_val)
         # print(max_val)
+        print(self.start_position)
+        print(self.goal)
         rrt_star = RRTStar(
             start=self.start_position,
             goal=self.goal,
@@ -92,7 +98,8 @@ class robot:
 
         x_path.reverse()
         y_path.reverse()
-
+        print(x_path[0])
+        print(y_path[0])
         goal = [x_path[-1], y_path[-1]]
         cyaw=[]
         cx=[]
@@ -214,7 +221,7 @@ class robot:
         robot_state_history = np.empty((4, NUMBER_OF_TIMESTEPS))
         #plt.plot(self.temp_goal[0],self.temp_goal[1],'xg')
         #plt.plot(self.start_position[1],self.start_position[0],'xk')
-        print("Temp GOAL", self.goal)
+        print("Temp GOAL", self.temp_goal)
         print("Start", self.start_position)
 
 
@@ -301,7 +308,7 @@ def calc_speed_profile(cyaw, target_speed):
 
 
 
-# r1=robot([0,0],1)
-# r1.update_goal([15,10])
-# r1.find_path_to_goal(True)
-# print(r1.get_next_steps(8))
+#r1=robot([0,0],1)
+#r1.set_start_and_goal([0,0],[15,10])
+#r1.find_path_to_goal(True)
+#print(r1.get_next_steps(8))

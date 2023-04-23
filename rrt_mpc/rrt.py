@@ -228,6 +228,7 @@ class RRT:
     def check_collision(node, obstacleList, robot_radius):
 
         if node is None:
+            print("Node is none")
             return False
 
         for (ox, oy, size) in obstacleList:
@@ -237,7 +238,7 @@ class RRT:
 
             if min(d_list) <= (size+robot_radius)**2:
                 return False  # collision
-
+        
         return True  # safe
 
     @staticmethod

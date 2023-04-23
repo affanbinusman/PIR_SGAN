@@ -12,7 +12,7 @@ var plist = []
 let loopStep = 0;
 var timestep = 0;
 
-const numberOfPeople = 0;
+const numberOfPeople = 3;
 const radius = 50;
 
 function getNewPredictions() {
@@ -23,6 +23,8 @@ function getNewPredictions() {
 		"ptrajs": ptrajs,
 		"rtrajs": rtrajs
 	};
+
+	console.log("rtrajs.length = ", rtrajs.length)
 	
 	fetch("http://localhost:8000/get_preds", {
 		method: 'POST',
@@ -57,6 +59,8 @@ function getNewPredictions() {
 
 function setRobotGoalPosition() {
 	const data = {
+		"startX": robot.posX,
+		"startY": robot.posY,
 		"goalX": robot.goalX,
 		"goalY": robot.goalY
 	};
@@ -128,7 +132,8 @@ function getRobotPositions() {
 	})
 	.then(data => {
 		console.log(data)
-		rpath = data.rpath;	
+		rpath = data.rpath;
+		console.log(rpath)
 		loop();
 	});
 }
@@ -141,8 +146,8 @@ function setup() {
 	// create robot
 	let startX = random(100, 300);
 	let startY = random(100, 300);
-	let goalX = 400 - startX;
-	let goalY = 400 - startY;
+	let goalX = startX + random(-50, 50);
+	let goalY = goalX + random(-50, 50);
 	robot = new Robot(startX, startY, goalX, goalY);
 
 	for (let i  = 0; i < numberOfPeople; i++) {
@@ -157,7 +162,9 @@ function draw() {
 	background(0);
 
 	if (rpath.length > 0) {
-		robot.updatePosition(rpath[0][0], rpath[0][1]);
+		console.log(rpath[0][0][0])
+		console.log(rpath[0][0][1])
+		robot.updatePosition(rpath[0][0][0], rpath[0][0][1]);
 		rpath.shift();
 	}
 	robot.display();

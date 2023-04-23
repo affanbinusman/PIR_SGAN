@@ -141,11 +141,15 @@ async def get_preds(data: dict):
 @app.post("/set_goal")
 async def set_goal(data: dict):
     # data contains:
+    # startX: float
+    # startY: float
     # goalX: float
     # goalY: float
-    goalX = float(data.get("goalX"))
-    goalY = float(data.get("goalY"))
-    r1.update_goal([goalX, goalY])
+    startX = int(data["startX"])
+    startY = int(data["startY"])
+    goalX = int(data.get("goalX"))
+    goalY = int(data.get("goalY"))
+    r1.set_start_and_goal([startX, startY], [goalX, goalY])
     return {"res": 0}
 
 
