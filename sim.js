@@ -15,8 +15,8 @@ var timestep = 0;
 const numberOfPeople = 3;
 const radius = 50;
 
-function getNewPredictions() {
-	noLoop();
+async function getNewPredictions() {
+	//noLoop();
 	const data = {
 		"numberOfPeople": numberOfPeople,
 		"radius": radius,
@@ -25,35 +25,57 @@ function getNewPredictions() {
 	};
 
 	console.log("rtrajs.length = ", rtrajs.length)
-	
-	fetch("http://localhost:8000/get_preds", {
+
+	const response = await fetch("http:localhost:8000/get_preds", {
 		method: 'POST',
 		headers: {
-				'Content-Type': 'application/json'
+			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify(data)
-	})
-	.then(response => {
-		if (response.ok) {
-				return response.json();
-		}
-		else {
-				throw new Error("barf!");
-		}
-	})
-	.then(data => {
-		if (data.res == 0) {
-			ptrajs = [];
-			predictions = [];
-			plist = [];
-		}
-		else {
-			predictions = data.preds;
-			plist = data.plist;
-		}
-		getRobotPositions();
-		//loop();
 	});
+
+	const preds = await response.json();
+	if (preds.res == 0) {
+		ptrajs = [];
+		predictions = [];
+		plist = [];
+	}
+	else {
+		predictions = data.preds;
+		plist = data.plist;
+	}
+
+	pred_result = true;
+
+
+//	fetch("http://localhost:8000/get_preds", {
+//		method: 'POST',
+//		headers: {
+//				'Content-Type': 'application/json'
+//		},
+//		body: JSON.stringify(data)
+//	})
+//	.then(response => {
+//		if (response.ok) {
+//				return response.json();
+//		}
+//		else {
+//				throw new Error("barf!");
+//		}
+//	})
+//	.then(data => {
+//		if (data.res == 0) {
+//			ptrajs = [];
+//			predictions = [];
+//			plist = [];
+//		}
+//		else {
+//			predictions = data.preds;
+//			plist = data.plist;
+//		}
+//		getRobotPositions();
+//		//loop();
+//	});
 }
 
 
@@ -88,7 +110,6 @@ function setRobotGoalPosition() {
 
 
 function getRobotPositions() {
-	noLoop();	
 	// create array to store next 8 positions of all people
 	let ppath = []
 
@@ -132,9 +153,9 @@ function getRobotPositions() {
 	})
 	.then(data => {
 		console.log(data)
-		rpath = data.rpath;
+		rpath = data.rpath[0];
 		console.log(rpath)
-		loop();
+		loop()
 	});
 }
 
@@ -199,9 +220,8 @@ function draw() {
 		predictions.length == 0) {
 		pred_result = false;
 		getNewPredictions();
+		getRobotPositions();
 		noLoop();
-//		getRobotPositions();
-//		noLoop();
 		loopStep = 0;
 	} 
 
