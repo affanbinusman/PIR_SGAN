@@ -52,6 +52,7 @@ class robot:
         self.state[1] = self.cur_pos[1]
         self.start_position = start
         self.goal=goal
+        self.reached_goal = False
 
 
     def find_path_to_goal(self, show_animation):
@@ -156,7 +157,7 @@ class robot:
             dy = goal_pos[1] - self.obstacle_list[iter][1]
             dist_from_center=math.hypot(dx, dy)
         
-            if dist_from_center< self.obstacle_list[iter][2]:
+            if dist_from_center< self.obstacle_list[iter][2]+1.5:
                 print("Goal inside obstacle")
                 goal_inside_obstacle = True
 
@@ -189,25 +190,38 @@ class robot:
         goal_iter = self.path_iter
         k_steps_complete =False
         pos_history=[]
-        while (not k_steps_complete) and (self.path_iter<len(self.path_x)):
+        while (not k_steps_complete) and (goal_iter<len(self.path_x)):
+            dist_from_goal = np.linalg.norm(np.array([self.cur_pos[0], self.cur_pos[1]]) - np.array([self.path_x[-1], self.path_y[-1]]))
+            print("Distance from final  goal! : ", dist_from_goal )
+            if dist_from_goal<1:
+                self.reached_goal =True
+                print("Reached final Goal!")
+            
+
             if not self.check_goal_inside_obstacle([self.path_x[goal_iter], self.path_y[goal_iter]]):
                 self.temp_goal[0] =self.path_x[goal_iter]
                 self.temp_goal[1] =self.path_y[goal_iter]
             else:
                 goal_iter+=1
                 continue
-            if self.get_distance_with_robot(self.temp_goal[0],self.temp_goal[1])>1:
+            if self.get_distance_with_robot(self.temp_goal[0],self.temp_goal[1])>=1:
                 self.reached_temp_goal=False
                 while(not self.reached_temp_goal):
                     self.do_simulation() 
                 steps_iter+=1
                 pos_history.append([self.cur_pos])
+                print(steps_iter," Step Done!")
+                    
                 if steps_iter==num_of_steps:
                     k_steps_complete=True
-                    self.path_iter=goal_iter+1
+                    if goal_iter<len(self.path_x)-1:
+                        self.path_iter=goal_iter+1
+                    else:
+                        self.path_iter=0
             goal_iter+=1
+            
 
-        return pos_history        
+        return pos_history, steps_iter        
 
 
 
@@ -221,8 +235,8 @@ class robot:
         robot_state_history = np.empty((4, NUMBER_OF_TIMESTEPS))
         #plt.plot(self.temp_goal[0],self.temp_goal[1],'xg')
         #plt.plot(self.start_position[1],self.start_position[0],'xk')
-        print("Temp GOAL", self.temp_goal)
-        print("Start", self.start_position)
+        # print("Temp GOAL", self.temp_goal)
+        # print("Start", self.start_position)
 
 
         for i in range(NUMBER_OF_TIMESTEPS):
@@ -251,8 +265,8 @@ class robot:
             obstacle_predictions = predict_obstacle_positions(obstacle_predictions)    
             xref = compute_xref(robot_state, p_desired,
                                 HORIZON_LENGTH, NMPC_TIMESTEP)
-            print(obstacle_predictions)
-            print(xref)
+            # print(obstacle_predictions)
+            # print(xref)
             # compute velocity using nmpc
             vel, velocity_profile = compute_velocity(
                 robot_state, obstacle_predictions, xref)
@@ -308,7 +322,8 @@ def calc_speed_profile(cyaw, target_speed):
 
 
 
-#r1=robot([0,0],1)
-#r1.set_start_and_goal([0,0],[15,10])
-#r1.find_path_to_goal(True)
-#print(r1.get_next_steps(8))
+r1=robot([0,0],1)
+r1.set_start_and_goal([0,0],[15,10])
+r1.find_path_to_goal(True)
+print(r1.get_next_steps(8))
+print(r1.get_next_steps(8))
