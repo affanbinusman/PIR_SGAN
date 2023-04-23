@@ -55,14 +55,14 @@ class robot:
         self.reached_goal = False
 
 
-    def find_path_to_goal(self, show_animation):
+    def find_path_to_goal(self, show_animation , min_area, max_area):
         # self.obstacle_list=[[2,3,1]]  
         fov_r=0.5
         x_path=[]
         y_path=[]
 
-        min_val=50
-        max_val=350
+        min_val=min_area
+        max_val=max_area
         # Set Initial parameters
         # print(min_val)
         # print(max_val)
@@ -324,8 +324,10 @@ def calc_speed_profile(cyaw, target_speed):
 
 
 
-#r1=robot([0,0],1)
-#r1.set_start_and_goal([0,0],[15,10])
-#r1.find_path_to_goal(True)
-#print(r1.get_next_steps(8))
-#print(r1.get_next_steps(8))
+# r1=robot([0,0],1)
+# r1.set_start_and_goal([0,0],[205,100])
+#     val_min=min(r1.goal)
+#     val_max=max(r1.goal)
+#     r1.find_path_to_goal(True, val_min-50, val_max+50)
+# print(r1.get_next_steps(8))
+# print(r1.get_next_steps(8))
