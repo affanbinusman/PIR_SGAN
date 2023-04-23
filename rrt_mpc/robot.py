@@ -61,8 +61,8 @@ class robot:
         x_path=[]
         y_path=[]
 
-        min_val=-5
-        max_val=20
+        min_val=50
+        max_val=350
         # Set Initial parameters
         # print(min_val)
         # print(max_val)
@@ -79,6 +79,7 @@ class robot:
 
         if path is None:
             print("Cannot find path")
+            return -1
         else:
             print("found path!!")
             
@@ -125,6 +126,7 @@ class robot:
         self.path_y=cy
         self.path_yaw=cyaw
         self.path_k=ck
+        return 0
         # self.obstacle_list.append([4,4,2])
 
 
@@ -322,8 +324,8 @@ def calc_speed_profile(cyaw, target_speed):
 
 
 
-r1=robot([0,0],1)
-r1.set_start_and_goal([0,0],[15,10])
-r1.find_path_to_goal(True)
-print(r1.get_next_steps(8))
-print(r1.get_next_steps(8))
+#r1=robot([0,0],1)
+#r1.set_start_and_goal([0,0],[15,10])
+#r1.find_path_to_goal(True)
+#print(r1.get_next_steps(8))
+#print(r1.get_next_steps(8))

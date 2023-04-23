@@ -3,6 +3,7 @@ var robot;
 
 var rtrajs = [];
 var rpath = [];
+var robot_result = true;
 
 var ptrajs = [];
 var predictions = [];
@@ -26,56 +27,31 @@ async function getNewPredictions() {
 
 	console.log("rtrajs.length = ", rtrajs.length)
 
-	const response = await fetch("http:localhost:8000/get_preds", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	});
 
-	const preds = await response.json();
-	if (preds.res == 0) {
-		ptrajs = [];
-		predictions = [];
-		plist = [];
+	const xhr = new XMLHttpRequest();
+
+	xhr.open("POST", 'http://localhost:8000/get_preds', false);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+
+	xhr.send(JSON.stringify(data));
+
+	if (xhr.status == 200) {
+		const res = xhr.responseText;
+		console.log(res);
+		const preds = JSON.parse(res);
+		if (preds.res == 0) {
+			ptrajs = [];
+			predictions = [];
+			plist = [];
+		}
+		else {
+			predictions = preds.preds;
+			plist = preds.plist;
+		}
+
+		pred_result = true;
 	}
-	else {
-		predictions = data.preds;
-		plist = data.plist;
-	}
 
-	pred_result = true;
-
-
-//	fetch("http://localhost:8000/get_preds", {
-//		method: 'POST',
-//		headers: {
-//				'Content-Type': 'application/json'
-//		},
-//		body: JSON.stringify(data)
-//	})
-//	.then(response => {
-//		if (response.ok) {
-//				return response.json();
-//		}
-//		else {
-//				throw new Error("barf!");
-//		}
-//	})
-//	.then(data => {
-//		if (data.res == 0) {
-//			ptrajs = [];
-//			predictions = [];
-//			plist = [];
-//		}
-//		else {
-//			predictions = data.preds;
-//			plist = data.plist;
-//		}
-//		getRobotPositions();
-//		//loop();
-//	});
 }
 
 
@@ -111,24 +87,32 @@ function setRobotGoalPosition() {
 
 function getRobotPositions() {
 	// create array to store next 8 positions of all people
+//	[
+//		[0, 0], //p1
+//		[1, 1], //p2
+//		[2, 2], //p3
+//		[0, 1], //p1
+//	]
 	let ppath = []
 
 	let idx = 0;
-	for (let i = 0; i < numberOfPeople; i++) {
-		let px = persons[i].posX;
-		let py = persons[i].posY;
-		for (let j = 0; j < 8; j++) {
-			if (predictions.length != 0 && i == idx) {
-				ppath.push([i, predictions[j][idx+1][0], predictions[j][idx+1][1]]);
+	for (let t = 0; t < 8; t++) {
+		idx = 0;
+		for(let p = 0; p < numberOfPeople; p++) {
+			if (predictions.length != 0 && p == plist[idx]) {
+				ppath.push([predictions[t][idx+1][0], predictions[t][idx+1][1]]);
+				idx++;
 			}
 			else {
-				px += persons[i].mX;
-				py += persons[i].mY;
-				ppath.push([i, px, py]);
+				px = persons[p].posX + persons[p].mX * (t + 1);
+				py = persons[p].posY + persons[p].mY * (t + 1);
+				ppath.push([px, py]);
 			}
 		}
-		idx++;
 	}
+
+	console.log(ppath)
+
 
 	const data = {
 		"numberOfPeople":numberOfPeople,
@@ -136,27 +120,30 @@ function getRobotPositions() {
 		"rtrajs": rtrajs
 	};
 	
-	fetch("http://localhost:8000/get_robot", {
-		method: 'POST',
-		headers: {
-				'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(data)
-	})
-	.then(response => {
-		if (response.ok) {
-				return response.json();
-		}
-		else {
-				throw new Error("barf!");
-		}
-	})
-	.then(data => {
-		console.log(data)
-		rpath = data.rpath[0];
+	const xhr = new XMLHttpRequest();
+
+	xhr.open("POST", 'http://localhost:8000/get_robot', false);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+
+	xhr.send(JSON.stringify(data));
+
+	if (xhr.status == 200) {
+		const res = xhr.responseText;
+		const preds = JSON.parse(res);
+		console.log(preds);
+		rpath = preds.rpath;
 		console.log(rpath)
-		loop()
-	});
+		robot_result = true;
+//		const obstacles = preds.obstacles;
+//
+//		for (let i = 0; i < obstacles.length; i++) {
+//			push();
+//			fill(255);
+//			noStroke();
+//			circle(obstacles[i][0], obstacles[i][1], obstacles[i][2]);
+//			pop();
+//		}
+	}
 }
 
 
@@ -180,6 +167,10 @@ function setup() {
 }
 
 function draw() {
+
+	if (!robot_result || !pred_result)
+		return;
+
 	background(0);
 
 	if (rpath.length > 0) {
@@ -190,14 +181,14 @@ function draw() {
 	}
 	robot.display();
 	robot.displayGoal();
-	rtrajs.push([timestep, numberOfPeople + 1, robot.posX, robot.posY]);
+	rtrajs.push([timestep, 0, robot.posX, robot.posY]);
 
 	if (rtrajs.length > 8)
 		rtrajs.shift();
 
 	let pidx = 0;
 	for (let i = 0; i < numberOfPeople; i++) {
-		if (predictions.length != 0 && i == plist[pidx]) {
+		if (predictions.length != 0 && (i+1) == plist[pidx]) {
 			persons[i].updatePosition(1, predictions[0][pidx+1][0], predictions[0][pidx+1][1]);
 			pidx += 1;
 		}
@@ -206,7 +197,7 @@ function draw() {
 		}
 		persons[i].display();
 		
-		ptrajs.push([timestep, i, persons[i].posX, persons[i].posY]);
+		ptrajs.push([timestep, i+1, persons[i].posX, persons[i].posY]);
 
 		if (ptrajs.length > (persons.length * 8)) {
 			ptrajs.shift();
@@ -216,14 +207,16 @@ function draw() {
 	predictions.shift();
 	console.log(predictions)
 
-	if (loopStep == 7 &&
+	if (loopStep > 7 &&
 		predictions.length == 0) {
 		pred_result = false;
+		robot_result = false;
 		getNewPredictions();
 		getRobotPositions();
-		noLoop();
 		loopStep = 0;
-	} 
+	}
+
+//	debugger;
 
 
 	timestep += 10;

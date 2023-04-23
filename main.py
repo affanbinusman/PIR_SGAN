@@ -123,6 +123,7 @@ async def get_preds(data: dict):
     numofplayers = int(data['numberOfPeople'])
     new_trajs, plist = check_dist(ptrajs, rtrajs, numofplayers, radius)
 
+    print(len(new_trajs))
     assert(len(new_trajs) % 8 == 0)
 
     preds = None
@@ -166,11 +167,11 @@ async def get_robot(data: dict):
     obstacles_list=[]
     person_iter=0
     for iter in range(num_persons):
-        x_start = ptrajs[iter][1]
-        y_start = ptrajs[iter][2]
+        x_start = ptrajs[iter][0]
+        y_start = ptrajs[iter][1]
 
-        x_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][1]
-        y_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][2]
+        x_end = ptrajs[iter+(num_of_steps-1)*num_persons][0]
+        y_end = ptrajs[iter+(num_of_steps-1)*num_persons][1]
 
         center_x = (x_start+x_end)/2
         center_y = (y_start+y_end)/2
@@ -180,13 +181,20 @@ async def get_robot(data: dict):
         obstacles_list.append([center_x, center_y, obs_radius])
 
     r1.obstacle_list = obstacles_list
-    
+   
+    rpath = []
+    num_steps_moved = 0
+
     # r1.path = data['ppath']
     # r1.rpath = data['rpath']
-    r1.find_path_to_goal(True)
+    res = r1.find_path_to_goal(True)
+    
+    if res == -1:
+        return {"rpath": rpath, "num_steps_moved":num_of_steps_moved}
+    
     rpath, num_of_steps_moved =r1.get_next_steps(num_of_steps)
     
     # rpath = []
     # for i in range(8):
     #     rpath.append(r1.path_x[i], r1.path_y[i])
-    return {"rpath": rpath, "num_steps_moved":num_of_steps_moved}
+    #return {"obstacles" :obstacles_list}
