@@ -92,19 +92,19 @@ function getRobotPositions() {
 		let py = persons[i].posY;
 		for (let j = 0; j < 8; j++) {
 			if (predictions.length != 0 && i == idx) {
-				ppath.append([i, predictions[j][idx+1][0], predictions[j][idx+1][1]]);
+				ppath.push([i, predictions[j][idx+1][0], predictions[j][idx+1][1]]);
 			}
 			else {
 				px += persons[i].mX;
 				py += persons[i].mY;
-				ppath.append([i, px, py]);
+				ppath.push([i, px, py]);
 			}
 		}
 		idx++;
 	}
 
 	const data = {
-		"ptrajs":ptrajs,
+		"numberOfPeople":numberOfPeople,
 		"ppath":ppath,
 		"rtrajs": rtrajs
 	};
