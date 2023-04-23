@@ -152,21 +152,21 @@ async def set_goal(data: dict):
 @app.post("/get_robot")
 async def get_robot(data: dict):
     # data contains:
-    # ptrajs: Array of previous 8 positions of all the humans
+    # numberOfPeople: number of people in simulation
     # ppath: Array of 8 next positions of all people. 
     # rpath: Array of the previous 8 positions of the robot
     num_of_steps =8
     ptrajs = data['ppath']
-    num_persons = len(ptrajs/num_of_steps)
+    num_persons = int(data["numberOfPeople"])
     # obs_sta]=[]
     obstacles_list=[]
     person_iter=0
     for iter in range(num_persons):
-        x_start = ptrajs[iter][2]
+        x_start = ptrajs[iter][1]
         y_start = ptrajs[iter][2]
 
-        x_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][2]
-        y_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][3]
+        x_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][1]
+        y_end = ptrajs[iter+(num_of_steps-1)*num_persons-1][2]
 
         center_x = (x_start+x_end)/2
         center_y = (y_start+y_end)/2
