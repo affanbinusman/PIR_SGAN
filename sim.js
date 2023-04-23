@@ -6,15 +6,17 @@ var rpath = [];
 
 var ptrajs = [];
 var predictions = [];
+var pred_result = true
 var plist = []
 
+let loopStep = 0;
 var timestep = 0;
 
-const numberOfPeople = 10;
+const numberOfPeople = 0;
 const radius = 50;
 
 function getNewPredictions() {
-
+	noLoop();
 	const data = {
 		"numberOfPeople": numberOfPeople,
 		"radius": radius,
@@ -47,6 +49,7 @@ function getNewPredictions() {
 			predictions = data.preds;
 			plist = data.plist;
 		}
+		getRobotPositions();
 		//loop();
 	});
 }
@@ -81,7 +84,7 @@ function setRobotGoalPosition() {
 
 
 function getRobotPositions() {
-	
+	noLoop();	
 	// create array to store next 8 positions of all people
 	let ppath = []
 
@@ -152,7 +155,7 @@ function setup() {
 
 function draw() {
 	background(0);
-	
+
 	if (rpath.length > 0) {
 		robot.updatePosition(rpath[0][0], rpath[0][1]);
 		rpath.shift();
@@ -185,13 +188,17 @@ function draw() {
 	predictions.shift();
 	console.log(predictions)
 
-	if (ptrajs.length >= (numberOfPeople * 8) &&
+	if (loopStep == 7 &&
 		predictions.length == 0) {
+		pred_result = false;
 		getNewPredictions();
-		getRobotPositions();
 		noLoop();
+//		getRobotPositions();
+//		noLoop();
+		loopStep = 0;
 	} 
 
 
 	timestep += 10;
+	loopStep += 1;
 }
